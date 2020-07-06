@@ -19,8 +19,8 @@ import com.parse.SaveCallback;
 public class ChatActivity extends AppCompatActivity {
     static final String TAG = ChatActivity.class.getSimpleName();
 
-    static final String USER_ID_KEY = "userId";
-    static final String BODY_KEY = "body";
+//    static final String USER_ID_KEY = "userId";
+//    static final String BODY_KEY = "body";
 
     EditText etMessage;
     Button btSend;
@@ -52,9 +52,15 @@ public class ChatActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 String data = etMessage.getText().toString();
-                ParseObject message = ParseObject.create("Message");
-                message.put(USER_ID_KEY, ParseUser.getCurrentUser().getObjectId());
-                message.put(BODY_KEY, data);
+//                ParseObject message = ParseObject.create("Message");
+//                message.put(USER_ID_KEY, ParseUser.getCurrentUser().getObjectId());
+//                message.put(BODY_KEY, data);
+
+                // Using new `Message` Parse-backed model now
+                Message message = new Message();
+                message.setBody(data);
+                message.setUserId(ParseUser.getCurrentUser().getObjectId());
+
                 message.saveInBackground(new SaveCallback() {
                     @Override
                     public void done(ParseException e) {
