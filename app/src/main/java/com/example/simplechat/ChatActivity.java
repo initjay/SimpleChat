@@ -1,6 +1,8 @@
 package com.example.simplechat;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Bundle;
 import android.util.Log;
@@ -16,6 +18,8 @@ import com.parse.ParseObject;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
 
+import java.util.ArrayList;
+
 public class ChatActivity extends AppCompatActivity {
     static final String TAG = ChatActivity.class.getSimpleName();
 
@@ -24,6 +28,12 @@ public class ChatActivity extends AppCompatActivity {
 
     EditText etMessage;
     Button btSend;
+
+    RecyclerView rvChat;
+    ArrayList<Message> mMessages;
+    ChatAdapter mAdapter;
+    // Keep track of initial load to scroll to the bottom of the ListView
+    boolean mFirstLoad;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,6 +57,17 @@ public class ChatActivity extends AppCompatActivity {
         // Find the text field and button
         etMessage = (EditText) findViewById(R.id.etMessage);
         btSend = (Button) findViewById(R.id.btSend);
+        rvChat = (RecyclerView) findViewById(R.id.rvChat);
+        mMessages = new ArrayList<>();
+        mFirstLoad = true;
+        final String userId = ParseUser.getCurrentUser().getObjectId();
+        mAdapter = new ChatAdapter(ChatActivity.this, userId, mMessages);
+        rvChat.setAdapter(mAdapter);
+
+        // associate the LayoutManager with the RecylcerView
+        final LinearLayoutManager linearLayoutManager = new LinearLayoutManager(ChatActivity.this);
+        rvChat.setLayoutManager(linearLayoutManager);
+
         // When send button is clicked, create message object on Parse
         btSend.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -60,7 +81,6 @@ public class ChatActivity extends AppCompatActivity {
                 Message message = new Message();
                 message.setBody(data);
                 message.setUserId(ParseUser.getCurrentUser().getObjectId());
-
                 message.saveInBackground(new SaveCallback() {
                     @Override
                     public void done(ParseException e) {
@@ -75,6 +95,11 @@ public class ChatActivity extends AppCompatActivity {
                 etMessage.setText(null);
             }
         });
+    }
+
+    // Query messages from Parse so we can load them into the chat adapter
+    void refreshMessages() {
+        // TODO:
     }
 
     // Create an anonymous user using ParseAnonymousUtils and set sUserId
