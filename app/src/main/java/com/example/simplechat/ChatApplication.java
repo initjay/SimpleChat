@@ -23,6 +23,7 @@ public class ChatApplication extends Application {
         // any network interceptors must be added with the Configuration Builder given this syntax
         Parse.initialize(new Parse.Configuration.Builder(this)
                 .applicationId("simplechat-client") // should correspond to APP_ID env variable
+                .clientKey(null)
                 .clientBuilder(builder)
                 .server("https://codepath-chat-lab.herokuapp.com/parse/").build());
     }
