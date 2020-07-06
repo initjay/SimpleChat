@@ -5,6 +5,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -39,6 +40,17 @@ public class ChatActivity extends AppCompatActivity {
     // Keep track of initial load to scroll to the bottom of the ListView
     boolean mFirstLoad;
 
+    // Create a handler which can run code periodically
+    static final int POLL_INTERVAL = 1000; // milliseconds
+    Handler myHandler = new android.os.Handler();
+    Runnable mRefreshMessagesRunnable = new Runnable() {
+        @Override
+        public void run() {
+            refreshMessages();
+            myHandler.postDelayed(this, POLL_INTERVAL);
+        }
+    };
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -49,6 +61,8 @@ public class ChatActivity extends AppCompatActivity {
         } else { // If not logged in, login as a new anonymous user
             login();
         }
+
+        myHandler.postDelayed(mRefreshMessagesRunnable, POLL_INTERVAL);
     }
 
     // Get the userId from the cached currentUser object
