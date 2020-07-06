@@ -84,6 +84,8 @@ public class ChatActivity extends AppCompatActivity {
 
         // associate the LayoutManager with the RecylcerView
         final LinearLayoutManager linearLayoutManager = new LinearLayoutManager(ChatActivity.this);
+        // change ordering for bottom messages to be the newest
+        linearLayoutManager.setReverseLayout(true);
         rvChat.setLayoutManager(linearLayoutManager);
 
         // When send button is clicked, create message object on Parse
